@@ -8,7 +8,7 @@ import {
 } from 'lucide-react'
 
 // Local component for the before/after slider preview
-function PreviewSlider({ originalImage, convertedImage, label }) {
+function PreviewSlider({ originalImage, convertedImage, label, isSimulated }) {
     const [sliderPos, setSliderPos] = useState(50)
     const [isHovered, setIsHovered] = useState(false)
 
@@ -21,12 +21,28 @@ function PreviewSlider({ originalImage, convertedImage, label }) {
 
     return (
         <div className="group flex flex-col items-center mt-6 w-full max-w-sm mx-auto">
+            {/* SVG Filter for Edge Detection Simulation */}
+            {isSimulated && (
+                <svg width="0" height="0" className="hidden">
+                    <filter id="simulated-sketch">
+                        <feColorMatrix type="matrix" values="0.33 0.33 0.33 0 0  0.33 0.33 0.33 0 0  0.33 0.33 0.33 0 0  0 0 0 1 0" result="gray" />
+                        <feConvolveMatrix order="3" kernelMatrix="-1 -1 -1 -1 8 -1 -1 -1 -1" in="gray" result="edges" />
+                        <feComponentTransfer in="edges">
+                            <feFuncR type="linear" slope="-1" intercept="1" />
+                            <feFuncG type="linear" slope="-1" intercept="1" />
+                            <feFuncB type="linear" slope="-1" intercept="1" />
+                        </feComponentTransfer>
+                    </filter>
+                </svg>
+            )}
+
             <div className="flex items-center gap-2 mb-3">
                 <Eye className="w-5 h-5 text-rabix-purple" />
                 <h4 className="font-bold text-rabix-dark/80">Prévia do Estilo: {label}</h4>
             </div>
+
             <div
-                className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden cursor-ew-resize shadow-md border border-rabix-purple/20"
+                className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden cursor-ew-resize shadow-md border border-rabix-purple/20 bg-white"
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
                 onMouseMove={(e) => {
@@ -43,7 +59,12 @@ function PreviewSlider({ originalImage, convertedImage, label }) {
             >
                 {/* After Image (Background) */}
                 <div className="absolute inset-0 bg-white">
-                    <img src={convertedImage} alt={`${label} convertido`} className="w-full h-full object-cover" />
+                    <img
+                        src={isSimulated ? originalImage : convertedImage}
+                        alt={`${label} convertido`}
+                        className="w-full h-full object-cover"
+                        style={isSimulated ? { filter: 'url(#simulated-sketch)' } : {}}
+                    />
                 </div>
 
                 {/* Before Image (Foreground, clipped) */}
@@ -69,13 +90,18 @@ function PreviewSlider({ originalImage, convertedImage, label }) {
 
                 {/* Badges */}
                 <div className="absolute top-3 left-3 px-3 py-1.5 bg-white/90 backdrop-blur-sm rounded-full text-[10px] sm:text-xs font-bold text-rabix-dark shadow-sm pointer-events-none z-20">
-                    📷 Foto
+                    📷 Sua Foto
                 </div>
                 <div className="absolute top-3 right-3 px-3 py-1.5 bg-white/90 backdrop-blur-sm rounded-full text-[10px] sm:text-xs font-bold text-rabix-purple shadow-sm pointer-events-none z-20">
-                    ✏️ Desenho
+                    ✏️ Desenho ({label})
                 </div>
             </div>
-            <p className="text-xs text-rabix-dark/50 mt-3 text-center">Arraste a barra para ver a Regra de Ouro em ação: as linhas encaixam perfeitamente na foto real!</p>
+
+            {isSimulated ? (
+                <p className="text-xs text-amber-500 font-medium mt-3 text-center">Simulação do estilo {label}. O desenho real usará a nossa IA avançada!</p>
+            ) : (
+                <p className="text-xs text-rabix-dark/50 mt-3 text-center">Arraste a barra para ver a Regra de Ouro em ação: as linhas encaixam perfeitamente na foto real!</p>
+            )}
         </div>
     )
 }
@@ -399,8 +425,9 @@ export default function UploadPage() {
 
                             {/* PREVIEW COMPONENT */}
                             <PreviewSlider
-                                originalImage="/examples/magic/family_base.png"
-                                convertedImage={PREVIEWS[selectedStyle] || PREVIEWS['cartoon']}
+                                originalImage={files.length > 0 ? URL.createObjectURL(files[0]) : "/examples/magic/family_base.png"}
+                                convertedImage={files.length > 0 ? URL.createObjectURL(files[0]) : (PREVIEWS[selectedStyle] || PREVIEWS['cartoon'])}
+                                isSimulated={files.length > 0}
                                 label={STYLES.find(s => s.id === selectedStyle)?.name || 'Cartoon'}
                             />
 
