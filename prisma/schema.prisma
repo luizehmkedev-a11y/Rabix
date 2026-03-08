@@ -1,0 +1,92 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(cuid())
+  name          String
+  email         String   @unique
+  passwordHash  String   @map("password_hash")
+  planType      String   @default("free") @map("plan_type")
+  photoLimit    Int      @default(3) @map("photo_limit")
+  photosUsed    Int      @default(0) @map("photos_used")
+  ipAddress     String?  @map("ip_address")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  photos        Photo[]
+  coloringBooks ColoringBook[]
+  payments      Payment[]
+
+  @@map("users")
+}
+
+model Photo {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  fileUrl   String   @map("file_url")
+  fileName  String   @map("file_name")
+  status    String   @default("pending") // pending, processed, deleted
+  createdAt DateTime @default(now()) @map("created_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  drawing  Drawing?
+
+  @@map("photos")
+}
+
+model Drawing {
+  id         String   @id @default(cuid())
+  photoId    String   @unique @map("photo_id")
+  drawingUrl String   @map("drawing_url")
+  createdAt  DateTime @default(now()) @map("created_at")
+  deletedAt  DateTime? @map("deleted_at")
+
+  photo Photo @relation(fields: [photoId], references: [id], onDelete: Cascade)
+
+  @@map("drawings")
+}
+
+model ColoringBook {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  title     String
+  pdfUrl    String?  @map("pdf_url")
+  status    String   @default("pending") // pending, processing, ready, deleted
+  pages     Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("coloring_books")
+}
+
+model Payment {
+  id            String   @id @default(cuid())
+  userId        String   @map("user_id")
+  plan          String
+  amount        Float
+  currency      String   @default("BRL")
+  paymentStatus String   @default("pending") @map("payment_status")
+  stripeId      String?  @unique @map("stripe_id")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("payments")
+}
+
+model Lead {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("leads")
+}
