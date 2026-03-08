@@ -114,6 +114,13 @@ export default function CadernosPage() {
         )
     }
 
+    const COVER_THEMES = {
+        'heroes': { name: 'Super-Heróis', color: 'from-blue-500 to-red-500' },
+        'forest': { name: 'Floresta Mágica', color: 'from-green-400 to-emerald-600' },
+        'princess': { name: 'Castelo Princesa', color: 'from-pink-400 to-purple-500' },
+        'space': { name: 'Aventura Espacial', color: 'from-indigo-900 to-purple-900' },
+    }
+
     return (
         <div className="max-w-6xl mx-auto space-y-8">
             <div className="flex items-center justify-between">
@@ -153,66 +160,91 @@ export default function CadernosPage() {
                     </Link>
                 </div>
             ) : (
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {books.map((book) => (
-                        <div key={book.id} className="glass-card overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                            {/* Cover preview */}
-                            <div className="aspect-[3/4] bg-gradient-to-br from-rabix-purple/10 to-rabix-orange/10 flex items-center justify-center">
-                                <div className="text-center">
-                                    <BookOpen className="w-16 h-16 text-rabix-purple/30 mx-auto mb-2" />
-                                    <p className="text-sm text-rabix-dark/30">{book.pages} páginas</p>
-                                </div>
-                            </div>
+                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {books.map((book) => {
+                        const theme = COVER_THEMES[book.coverTheme] || COVER_THEMES['heroes']
 
-                            {/* Info */}
-                            <div className="p-5">
-                                <h4 className="font-bold mb-1 truncate">{book.title}</h4>
-                                <div className="flex items-center gap-2 text-xs text-rabix-dark/40 mb-4">
-                                    <Calendar className="w-3 h-3" />
-                                    {new Date(book.createdAt).toLocaleDateString('pt-BR')}
+                        return (
+                            <div key={book.id} className="glass-card overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 flex flex-col">
+                                {/* Custom Cover preview */}
+                                <div className="relative aspect-[3/4] bg-rabix-dark overflow-hidden flex-shrink-0">
+                                    <div className={`absolute inset-0 bg-gradient-to-br ${theme.color} opacity-90`} />
+
+                                    {/* Overlay elements */}
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center">
+                                        <div className="mb-auto mt-4 w-full">
+                                            <p className="text-white/60 text-xs font-bold uppercase tracking-widest">{theme.name}</p>
+                                        </div>
+
+                                        <h3 className="text-white font-black text-xl leading-tight drop-shadow-md">
+                                            {book.title || 'Meu Caderno'}
+                                        </h3>
+
+                                        {book.childName && (
+                                            <div className="mt-4 bg-white/20 backdrop-blur-sm px-4 py-1.5 rounded-full border border-white/30">
+                                                <p className="text-white font-bold text-sm">
+                                                    {book.childName}
+                                                </p>
+                                            </div>
+                                        )}
+
+                                        <div className="mt-auto mb-2 text-white/50 flex items-center gap-1.5">
+                                            <BookOpen className="w-4 h-4" />
+                                            <span className="text-xs font-medium">{book.pages} páginas</span>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div className="flex flex-col gap-2 mt-2">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        {getStatusBadge(book.status)}
+                                {/* Info */}
+                                <div className="p-5">
+                                    <h4 className="font-bold mb-1 truncate">{book.title}</h4>
+                                    <div className="flex items-center gap-2 text-xs text-rabix-dark/40 mb-4">
+                                        <Calendar className="w-3 h-3" />
+                                        {new Date(book.createdAt).toLocaleDateString('pt-BR')}
                                     </div>
 
-                                    {book.status === 'deleted' ? (
-                                        <div className="p-2 border border-gray-200 text-gray-500 bg-gray-50 rounded-lg text-xs text-center">
-                                            Arquivo expirado (30 dias)
+                                    <div className="flex flex-col gap-2 mt-2">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            {getStatusBadge(book.status)}
                                         </div>
-                                    ) : (
-                                        <>
-                                            {book.status === 'ready' && book.pdfUrl && (
-                                                <button
-                                                    onClick={() => handleDownload(book.id)}
-                                                    className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-gray-100 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-200 transition-colors"
-                                                >
-                                                    <Download className="w-4 h-4" />
-                                                    Baixar PDF
-                                                </button>
-                                            )}
 
-                                            {book.status === 'ready' && (
-                                                <button
-                                                    onClick={() => handlePrintCheckout(book.id)}
-                                                    disabled={printLoading === book.id}
-                                                    className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-rabix-purple text-white text-sm font-semibold rounded-lg hover:bg-rabix-purple-dark transition-colors disabled:opacity-50"
-                                                >
-                                                    {printLoading === book.id ? (
-                                                        <Loader2 className="w-4 h-4 animate-spin" />
-                                                    ) : (
-                                                        <span>🚚</span>
-                                                    )}
-                                                    Receber em Casa (R$ 29,90)
-                                                </button>
-                                            )}
-                                        </>
-                                    )}
+                                        {book.status === 'deleted' ? (
+                                            <div className="p-2 border border-gray-200 text-gray-500 bg-gray-50 rounded-lg text-xs text-center">
+                                                Arquivo expirado (30 dias)
+                                            </div>
+                                        ) : (
+                                            <>
+                                                {book.status === 'ready' && book.pdfUrl && (
+                                                    <button
+                                                        onClick={() => handleDownload(book.id)}
+                                                        className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-gray-100 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-200 transition-colors"
+                                                    >
+                                                        <Download className="w-4 h-4" />
+                                                        Baixar PDF
+                                                    </button>
+                                                )}
+
+                                                {book.status === 'ready' && (
+                                                    <button
+                                                        onClick={() => handlePrintCheckout(book.id)}
+                                                        disabled={printLoading === book.id}
+                                                        className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-rabix-purple text-white text-sm font-semibold rounded-lg hover:bg-rabix-purple-dark transition-colors disabled:opacity-50"
+                                                    >
+                                                        {printLoading === book.id ? (
+                                                            <Loader2 className="w-4 h-4 animate-spin" />
+                                                        ) : (
+                                                            <span>🚚</span>
+                                                        )}
+                                                        Receber em Casa (R$ 29,90)
+                                                    </button>
+                                                )}
+                                            </>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        )
+                    })}
                 </div>
             )}
         </div>

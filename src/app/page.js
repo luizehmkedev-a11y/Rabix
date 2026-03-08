@@ -2,11 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import {
-    Upload, Wand2, Download, Star, ChevronDown, ChevronUp,
-    Camera, Palette, BookOpen, Check, ArrowRight, Sparkles,
-    Menu, X, Mail, Heart, Zap, Shield
-} from 'lucide-react'
+import { Camera, Check, ChevronDown, ChevronUp, Download, Heart, Mail, Menu, Palette, Shield, Sparkles, Star, Upload, Wand2, X, Zap, Smile, PenTool, ArrowRight } from 'lucide-react'
 
 // ============================================================
 // NAVBAR
@@ -273,7 +269,7 @@ function CompareSlider({ originalImage, convertedImage, label }) {
 // ============================================================
 function BeforeAfterSection() {
     const comparisons = [
-        { label: 'Retrato de Família', original: '/examples/family_original.png', converted: '/examples/family_drawing.png' },
+        { label: 'Retrato de Família', original: '/examples/magic/family_base.png', converted: '/examples/magic/family_lineart.png' },
         { label: 'Paisagem Natural', original: '/examples/landscape_original.png', converted: '/examples/landscape_drawing.png' },
         { label: 'Animal de Estimação', original: '/examples/pet_original.png', converted: '/examples/pet_drawing.png' },
     ]
@@ -384,51 +380,60 @@ function HowItWorksSection() {
 // ============================================================
 function ExamplesSection() {
     const examples = [
-        { title: 'Estilo Cartoon', subtitle: 'Traços grossos e divertidos (Ex: Bob Esponja)', icon: '🎨', bgColor: 'bg-yellow-50', borderColor: 'border-yellow-200', text: 'text-yellow-700' },
-        { title: 'Estilo Mangá/Anime', subtitle: 'Olhos expressivos e muito detalhe', icon: '⛩️', bgColor: 'bg-rose-50', borderColor: 'border-rose-200', text: 'text-rose-700' },
-        { title: 'Estilo Realista', subtitle: 'Sombreamento perfeito e fiel', icon: '📸', bgColor: 'bg-blue-50', borderColor: 'border-blue-200', text: 'text-blue-700' },
-        { title: 'Estilo Heróis Comics', subtitle: 'Ação, sombras duras e contraste', icon: '🦸', bgColor: 'bg-red-50', borderColor: 'border-red-200', text: 'text-red-700' },
-        { title: 'Estilo Fantasia', subtitle: 'Traços mágicos e delicados', icon: '✨', bgColor: 'bg-purple-50', borderColor: 'border-purple-200', text: 'text-purple-700' },
-        { title: 'Estilo Sketch Livre', subtitle: 'Rabisco criativo e rápido', icon: '✏️', bgColor: 'bg-slate-50', borderColor: 'border-slate-300', text: 'text-slate-700' },
+        { title: 'Estilo Cartoon', subtitle: 'Traços grossos e divertidos', original: '/examples/styles/base.png', converted: '/examples/styles/cartoon_lineart.png', color: 'text-amber-500', bgGlow: 'bg-amber-500/10', borderGlow: 'group-hover:border-amber-400', accent: 'bg-amber-400' },
+        { title: 'Estilo Mangá', subtitle: 'Olhos expressivos e muito detalhe', original: '/examples/styles/base.png', converted: '/examples/styles/manga_lineart.png', color: 'text-rose-500', bgGlow: 'bg-rose-500/10', borderGlow: 'group-hover:border-rose-400', accent: 'bg-rose-400' },
+        { title: 'Estilo Realista', subtitle: 'Sombreamento perfeito e fiel', original: '/examples/styles/base.png', converted: '/examples/styles/realistic_lineart.png', color: 'text-blue-500', bgGlow: 'bg-blue-500/10', borderGlow: 'group-hover:border-blue-400', accent: 'bg-blue-400' },
+        { title: 'Estilo Heróis Comics', subtitle: 'Ação, sombras curtas e contraste', original: '/examples/styles/base.png', converted: '/examples/styles/comics_lineart.png', color: 'text-red-500', bgGlow: 'bg-red-500/10', borderGlow: 'group-hover:border-red-400', accent: 'bg-red-400' },
+        { title: 'Estilo Fantasia', subtitle: 'Traços mágicos e delicados', original: '/examples/styles/base.png', converted: '/examples/styles/fantasy_lineart.png', color: 'text-purple-500', bgGlow: 'bg-purple-500/10', borderGlow: 'group-hover:border-purple-400', accent: 'bg-purple-400' },
+        { title: 'Estilo Sketch', subtitle: 'Livre, rabisco criativo e rápido', original: '/examples/styles/base.png', converted: '/examples/styles/sketch_lineart.png', color: 'text-slate-600', bgGlow: 'bg-slate-500/10', borderGlow: 'group-hover:border-slate-400', accent: 'bg-slate-400' },
     ]
 
     return (
-        <section className="py-24 bg-white" id="exemplos">
-            <div className="max-w-7xl mx-auto px-6">
+        <section className="py-24 bg-rabix-gray/30 relative" id="exemplos">
+            {/* Background elements */}
+            <div className="absolute top-40 left-0 w-full h-px bg-gradient-to-r from-transparent via-rabix-purple/10 to-transparent" />
+
+            <div className="max-w-7xl mx-auto px-6 relative z-10">
                 <div className="text-center mb-16">
-                    <span className="inline-flex items-center gap-2 px-4 py-2 bg-rabix-orange/10 rounded-full mb-4">
+                    <span className="inline-flex items-center gap-2 px-4 py-2 bg-rabix-orange/10 rounded-full mb-4 ring-1 ring-rabix-orange/20">
                         <Palette className="w-4 h-4 text-rabix-orange" />
-                        <span className="text-sm font-semibold text-rabix-orange">Vários Estilos de Arte</span>
+                        <span className="text-sm font-semibold text-rabix-orange tracking-wide uppercase">Direção de Arte</span>
                     </span>
-                    <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+                    <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-6 tracking-tight">
                         Nossa IA domina <span className="gradient-text">qualquer traço</span>
                     </h2>
-                    <p className="text-rabix-dark/50 max-w-2xl mx-auto">
-                        Escolha um estilo diferente para cada caderno que criar! Veja algumas das variações que nossa IA consegue gerar.
+                    <p className="text-rabix-dark/60 max-w-2xl mx-auto text-lg">
+                        Cada criança é única, o desenho dela também deve ser. Descubra como a mesma foto ganha vida nos diferentes estilos artísticos de geração que nossa tecnologia domina.
                     </p>
                 </div>
 
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {examples.map((ex, idx) => (
-                        <div key={idx} className="group cursor-pointer">
-                            <div className={`${ex.bgColor} rounded-2xl p-6 border-2 border-dashed ${ex.borderColor} hover:border-solid hover:shadow-xl transition-all duration-300 hover:-translate-y-2`}>
-                                <div className="aspect-[4/3] bg-white/80 rounded-xl flex flex-col items-center justify-center shadow-sm border border-white backdrop-blur-sm relative overflow-hidden">
-                                    <span className="text-6xl mb-4 group-hover:scale-125 transition-transform duration-500">{ex.icon}</span>
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {examples.map((ex, idx) => {
+                        return (
+                            <div key={idx} className="group relative block h-full">
+                                {/* Back Glow */}
+                                <div className={`absolute -inset-0.5 rounded-3xl blur-md opacity-0 group-hover:opacity-100 transition duration-500 ${ex.accent} bg-opacity-30 pointer-events-none`} />
 
-                                    {/* Mock drawing lines to suggest the style */}
-                                    <div className="absolute bottom-4 left-6 right-6 opacity-30 group-hover:opacity-100 transition-opacity flex flex-col gap-1.5">
-                                        <div className={`h-1 ${ex.bgColor} w-full rounded-full`}></div>
-                                        <div className={`h-1 ${ex.bgColor} w-4/5 rounded-full`}></div>
-                                        <div className={`h-1 ${ex.bgColor} w-2/3 rounded-full`}></div>
+                                <div className={`relative h-full bg-white rounded-3xl p-2 shadow-sm border border-slate-200/60 ${ex.borderGlow} transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-xl flex flex-col`}>
+
+                                    {/* Compare Slider Area */}
+                                    <div className={`p-1 rounded-[1.25rem] ${ex.bgGlow}`}>
+                                        <CompareSlider
+                                            originalImage={ex.original}
+                                            convertedImage={ex.converted}
+                                            label=""
+                                        />
+                                    </div>
+
+                                    {/* Content Area */}
+                                    <div className="px-6 pb-6 pt-4 text-center flex-grow flex flex-col justify-end">
+                                        <h3 className="font-bold text-xl mb-2 text-rabix-dark group-hover:text-rabix-purple transition-colors">{ex.title}</h3>
+                                        <p className="text-rabix-dark/60 text-sm leading-relaxed">{ex.subtitle}</p>
                                     </div>
                                 </div>
-                                <div className="mt-5 text-center">
-                                    <h3 className={`font-bold text-lg mb-1 ${ex.text}`}>{ex.title}</h3>
-                                    <p className="text-sm text-rabix-dark/60">{ex.subtitle}</p>
-                                </div>
                             </div>
-                        </div>
-                    ))}
+                        )
+                    })}
                 </div>
             </div>
         </section>

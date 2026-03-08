@@ -54,14 +54,16 @@ model Drawing {
 }
 
 model ColoringBook {
-  id        String   @id @default(cuid())
-  userId    String   @map("user_id")
-  title     String
-  pdfUrl    String?  @map("pdf_url")
-  status    String   @default("pending") // pending, processing, ready, deleted
-  pages     Int      @default(0)
-  createdAt DateTime @default(now()) @map("created_at")
-  deletedAt DateTime? @map("deleted_at")
+  id         String   @id @default(cuid())
+  userId     String   @map("user_id")
+  title      String
+  childName  String?  @map("child_name")
+  coverTheme String?  @map("cover_theme")
+  pdfUrl     String?  @map("pdf_url")
+  status     String   @default("pending") // pending, processing, ready, deleted
+  pages      Int      @default(0)
+  createdAt  DateTime @default(now()) @map("created_at")
+  deletedAt  DateTime? @map("deleted_at")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 

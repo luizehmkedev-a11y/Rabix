@@ -13,7 +13,7 @@ export async function POST(request) {
             return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
         }
 
-        const { title, drawingIds } = await request.json()
+        const { title, childName, coverTheme, drawingIds } = await request.json()
 
         if (!drawingIds || drawingIds.length === 0) {
             return NextResponse.json({ error: 'Selecione pelo menos um desenho' }, { status: 400 })
@@ -44,6 +44,8 @@ export async function POST(request) {
         // Generate PDF
         const pdfBuffer = await generateColoringBookPDF({
             title: title || `Meu Caderno de Colorir`,
+            childName: childName || '',
+            coverTheme: coverTheme || 'heroes',
             drawings: drawingBuffers,
             userName: user.name,
         })
@@ -63,6 +65,8 @@ export async function POST(request) {
             data: {
                 userId: user.id,
                 title: title || 'Meu Caderno de Colorir',
+                childName: childName,
+                coverTheme: coverTheme,
                 pdfUrl: `/pdfs/${pdfFileName}`,
                 status: 'ready',
                 pages: drawingBuffers.length,

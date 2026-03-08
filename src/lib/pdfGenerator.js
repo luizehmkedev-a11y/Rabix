@@ -40,31 +40,41 @@ export async function generateColoringBookPDF(options) {
             // ===========================
             doc.addPage()
 
-            // Purple gradient background (simulated with rectangles)
-            doc.rect(0, 0, pageWidth, pageHeight).fill('#6A3DF0')
+            const THEMES = {
+                'heroes': { bg: '#E53E3E', accent: '#3182CE', overlay: '#F6E05E' },
+                'forest': { bg: '#38A169', accent: '#276749', overlay: '#9AE6B4' },
+                'princess': { bg: '#ED64A6', accent: '#B83280', overlay: '#FBB6CE' },
+                'space': { bg: '#3182CE', accent: '#2C5282', overlay: '#E2E8F0' },
+            }
+            const theme = THEMES[options.coverTheme] || THEMES['heroes']
+
+            // Background
+            doc.rect(0, 0, pageWidth, pageHeight).fill(theme.bg)
 
             // Decorative circles
-            doc.circle(100, 150, 80).fill('#8B6AF5')
-            doc.circle(pageWidth - 80, pageHeight - 200, 60).fill('#5630C6')
-            doc.circle(pageWidth - 150, 100, 40).fill('#FF7A1A')
+            doc.circle(100, 150, 80).fill(theme.accent)
+            doc.circle(pageWidth - 80, pageHeight - 200, 60).fill(theme.accent)
+            doc.circle(pageWidth - 150, 100, 40).fill(theme.overlay)
 
             // Title
             doc.font('Helvetica-Bold')
                 .fontSize(42)
                 .fillColor('#FFFFFF')
-                .text(title, margin + 20, pageHeight / 2 - 100, {
+                .text(title, margin + 20, pageHeight / 2 - 120, {
                     width: pageWidth - (margin * 2) - 40,
                     align: 'center',
                 })
 
-            // Subtitle
-            doc.font('Helvetica')
-                .fontSize(16)
-                .fillColor('rgba(255,255,255,0.7)')
-                .text('Caderno de Colorir', margin, pageHeight / 2 - 20, {
-                    width: pageWidth - margin * 2,
-                    align: 'center',
-                })
+            // Child Name
+            if (options.childName) {
+                doc.font('Helvetica-Bold')
+                    .fontSize(32)
+                    .fillColor(theme.overlay)
+                    .text(options.childName.toUpperCase(), margin, pageHeight / 2 - 20, {
+                        width: pageWidth - margin * 2,
+                        align: 'center',
+                    })
+            }
 
             // Divider
             const dividerY = pageHeight / 2 + 20
